@@ -112,6 +112,8 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       });
     }
     
+    let intervalId;
+
     if(interaction.data.name == 'timer'){
       // 初期応答を送信
       await discord_api.post(`/interactions/${interaction.id}/${interaction.token}/callback`, {
@@ -122,25 +124,26 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         recipient_id: interaction.member.user.id
       })).data
     
-      // setTimeoutをPromiseでラップ
-      await new Promise(resolve => {
-        setTimeout(async () => {
-          try{
-            let res = await discord_api.post(`/channels/${c.id}/messages`,{
-              content:'時間だよ～',
-            })
-            console.log(res.data)
-            discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
-              content: `👍`
-            });
-          }catch(e){
-            console.log(e)
-            discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
-              content: `エラーが発生しました。もう一度お試しください。`
-            });
-          }
-        }, 10 * 1000);
-      });
+      // setIntervalを使用して10秒ごとにメッセージを送信
+      intervalId = setInterval(async () => {
+        try{
+          let res = await discord_api.post(`/channels/${c.id}/messages`,{
+            content:'時間だよ～',
+          })
+          console.log(res.data)
+          discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
+            content: `👍`
+          });
+        }catch(e){
+          console.log(e)
+          discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
+            content: `エラーが発生しました。もう一度お試しください。`
+          });
+        }
+      }, 10 * 1000);
+    } else if(interaction.data.name == 'stop'){
+      // 'stop'コマンドが受け取られたときにインターバルをクリア
+      clearInterval(intervalId);
     }
 
     
@@ -166,7 +169,13 @@ app.get('/register_commands', async (req,res) =>{
       "name": "timer",
       "description": "sets a timer for you",
       "options": []
+    },
+    {
+      "name": "stop",
+      "description": "stops the timer",
+      "options": []
     }
+
   ]
   try
   {
