@@ -26,6 +26,29 @@ const discord_api = axios.create({
   }
 });
 
+// 特定の時間（例: 15:30）を設定
+const targetHour = 23;
+const targetMinute = 40;
+
+// メッセージを送信する関数
+function sendMessage() {
+    // 現在の時間を取得
+    const currentTime = new Date();
+
+    // 特定の時間になったかどうかを確認
+    if (currentTime.getHours() === targetHour && currentTime.getMinutes() === targetMinute) {
+      res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: `タイマーをセットしました ${interaction.member.user.username}!`
+        }
+      });
+    }
+}
+
+// 1分ごとにsendMessage関数を実行する
+setInterval(sendMessage, 60000);
+
 
 
 
@@ -68,6 +91,14 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     }
     
     if(interaction.data.name == 'timer'){
+      // タイマーセットの通知
+      res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: `タイマーをセットしました ${interaction.member.user.username}!`
+        }
+      });
+
       // 1分後にリマインドする
       setTimeout(async () => {
         try{
