@@ -26,11 +26,11 @@ const discord_api = axios.create({
   }
 });
 
-client.on('message', message=> {
+/*client.on('message', message=> {
   if (message.content ==='a') {
       message.channel.send ('b');
  }
-});
+});*/
 
 
 
