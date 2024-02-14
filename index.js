@@ -85,7 +85,7 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
           content: `test ${interaction.member.user.username}!`
         });
-      }, 60000); // 5000ミリ秒（5秒）後にメッセージを送信します
+      }, 5000); // 5000ミリ秒（5秒）後にメッセージを送信します
     }
 
     if(interaction.data.name == 'dm'){
@@ -113,29 +113,17 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     }
     
     if(interaction.data.name == 'timer'){
-      // タイマーセットの通知
-      res.send({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          content: `タイマーをセットしました ${interaction.member.user.username}!`
-        }
+      // 初期応答を送信
+      discord_api.post(`/interactions/${interaction.id}/${interaction.token}/callback`, {
+        type: 5, // ACK_WITH_SOURCE
       });
-
-      // 1分後にリマインドする
-      setTimeout(async () => {
-        try{
-          let res = await discord_api.post(`/interactions/${interaction.id}/${interaction.token}/callback`,{
-            type: 4,
-            data: {
-              content: `時間ですよ ${interaction.member.user.username}!`
-            }
-          })
-          console.log(res.data)
-        }catch(e){
-          console.log(e)
-        }
-      }, 60000)
-
+    
+      setTimeout(() => {
+        // 1時間後にメッセージを送信
+        discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
+          content: `1時間が経過しました、${interaction.member.user.username}!`
+        });
+      }, 60 * 1000); // 60分 * 60秒 * 1000ミリ秒 = 1時間
     }
 
     
