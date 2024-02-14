@@ -82,12 +82,13 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         }
       });*/
       setTimeout(() => {
-        res.send({
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        // 5秒後にメッセージを送信
+        discord_api.post(`/interactions/${interaction.id}/${interaction.token}/callback`,{
+          type: 4,
           data: {
-            content: `こんにちは ${interaction.member.user.username}!`,
-          },
-        });
+            content: `test ${interaction.member.user.username}!`
+          }
+        })
       }, 5000); // 5000ミリ秒（5秒）後にメッセージを送信します
     }
 
