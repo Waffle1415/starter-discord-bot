@@ -124,8 +124,8 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         recipient_id: interaction.member.user.id
       })).data
     
-      // 非同期の処理を行う関数
-      const process = async () => {
+      // setIntervalを使用して10秒ごとにメッセージを送信
+      intervalId = setInterval(async () => {
         try{
           let res = await discord_api.post(`/channels/${c.id}/messages`,{
             content:'時間だよ～',
@@ -144,12 +144,7 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
             console.error('Failed to send error message:', error);
           }
         }
-        // 次のインターバルをスケジュール
-        setTimeout(process, 10 * 1000);
-      };
-    
-      // 最初のインターバルをスケジュール
-      setTimeout(process, 10 * 1000);
+      }, 10 * 1000);
     }
 
     if(interaction.data.name == 'stop'){
