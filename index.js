@@ -75,20 +75,16 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
     console.log(interaction.data.name)
     if(interaction.data.name == 'yo'){
-      /*res.send({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          content: `5秒後に挨拶します`
-        }
-      });*/
+      // 初期応答を送信
+      discord_api.post(`/interactions/${interaction.id}/${interaction.token}/callback`, {
+        type: 5, // ACK_WITH_SOURCE
+      });
+  
       setTimeout(() => {
         // 5秒後にメッセージを送信
-        discord_api.post(`/interactions/${interaction.id}/${interaction.token}/callback`,{
-          type: 4,
-          data: {
-            content: `test ${interaction.member.user.username}!`
-          }
-        })
+        discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
+          content: `test ${interaction.member.user.username}!`
+        });
       }, 5000); // 5000ミリ秒（5秒）後にメッセージを送信します
     }
 
