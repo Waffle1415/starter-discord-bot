@@ -57,9 +57,9 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     });
   }
 
-  if(interaction.type === InteractionType.message){
+  /*if(interaction.type === InteractionType.message){
     interaction.data.message.content
-  }
+  }*/
 
 
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
