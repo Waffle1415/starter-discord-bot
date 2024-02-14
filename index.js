@@ -75,12 +75,20 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
     console.log(interaction.data.name)
     if(interaction.data.name == 'yo'){
-      return res.send({
+      res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          content: `こんにちは ${interaction.member.user.username}!`,
-        },
+          content: `5秒 ${interaction.member.user.username}!`
+        }
       });
+      setTimeout(() => {
+        res.send({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          data: {
+            content: `こんにちは ${interaction.member.user.username}!`,
+          },
+        });
+      }, 5000); // 5000ミリ秒（5秒）後にメッセージを送信します
     }
 
     if(interaction.data.name == 'dm'){
