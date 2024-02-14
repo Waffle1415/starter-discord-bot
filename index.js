@@ -55,11 +55,21 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       message.channel.send('時間です');
       return;
     });
-  }
-
-  if(interaction.type === InteractionType.message){
-    interaction.data.message.content
   }*/
+
+  if (interaction.type === InteractionType.message){
+    // 最後のメッセージを取得
+    let last_message = (await discord_api.get(`/channels/${interaction.channel_id}/messages`)).data[0]
+    console.log(last_message)
+    // メッセージが"a"だったら"b"を返す
+    if(last_message.content == 'a'){
+      // https://discord.com/developers/docs/resources/channel#create-message
+      let res = await discord_api.post(`/channels/${interaction.channel_id}/messages`,{
+        content:'b',
+      })
+      console.log(res.data)
+    }
+  }
 
 
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
@@ -134,7 +144,7 @@ app.get('/register_commands', async (req,res) =>{
   let slash_commands = [
     {
       "name": "yo",
-      "description": "replies with Yo!",
+      "description": "replies",
       "options": []
     },
     {
