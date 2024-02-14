@@ -113,25 +113,25 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     }
     
     if(interaction.data.name == 'timer'){
-      // 初期応答を送信
-      await discord_api.post(`/interactions/${interaction.id}/${interaction.token}/callback`, {
-        type: 5, // ACK_WITH_SOURCE
-      });
-    
       let c = (await discord_api.post(`/users/@me/channels`,{
         recipient_id: interaction.member.user.id
       })).data
+
+      // 初期応答を送信
+      discord_api.post(`/interactions/${interaction.id}/${interaction.token}/callback`, {
+        type: 5, // ACK_WITH_SOURCE
+      });
     
-      setTimeout(async () => {
+      setTimeout(() => {
         try{
-          let res = await discord_api.post(`/channels/${c.id}/messages`,{
+          let res = discord_api.post(`/channels/${c.id}/messages`,{
             content:'時間だよ～',
           })
           console.log(res.data)
         }catch(e){
           console.log(e)
         }
-      }, 30 * 1000); // 30秒 * 1000ミリ秒 = 30秒
+      }, 30 * 1000); // 60秒 * 1000ミリ秒 = 1分
     }
 
     
