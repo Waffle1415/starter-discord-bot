@@ -85,7 +85,7 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
           content: `test ${interaction.member.user.username}!`
         });
-      }, 5000); // 5000ミリ秒（5秒）後にメッセージを送信します
+      }, 60000); // 5000ミリ秒（5秒）後にメッセージを送信します
     }
 
     if(interaction.data.name == 'dm'){
