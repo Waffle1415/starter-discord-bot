@@ -112,7 +112,27 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       });
     }
     
+    if(interaction.data.name == 'timer'){
+      let c = (await discord_api.post(`/users/@me/channels`,{
+        recipient_id: interaction.member.user.id
+      })).data
 
+      // 初期応答を送信
+      discord_api.post(`/interactions/${interaction.id}/${interaction.token}/callback`, {
+        type: 5, // ACK_WITH_SOURCE
+      });
+    
+      setTimeout(() => {
+        try{
+          let res = discord_api.post(`/channels/${c.id}/messages`,{
+            content:'時間だよ～',
+          })
+          console.log(res.data)
+        }catch(e){
+          console.log(e)
+        }
+      }, 10 * 1000); // 60秒 * 1000ミリ秒 = 1分
+    }
 
     
   }
