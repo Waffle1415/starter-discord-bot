@@ -131,21 +131,29 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
             content:'時間だよ～',
           })
           console.log(res.data)
-          discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
+          await discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
             content: `👍`
           });
         }catch(e){
           console.log(e)
-          discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
-            content: `エラーが発生しました。もう一度お試しください。`
-          });
+          try {
+            await discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
+              content: `エラーが発生しました。もう一度お試しください。`
+            });
+          } catch (error) {
+            console.error('Failed to send error message:', error);
+          }
         }
       }, 10 * 1000);
     }
-    
+
     if(interaction.data.name == 'stop'){
-      // 'stop'コマンドが受け取られたときにインターバルをクリア
+      // 'stop'コマンドが受け取られたときにインターバルをクリアする
       clearInterval(intervalId);
+      // stopメッセージを送信
+      discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
+        content: `タイマーを停止しました。`
+      });
     }
 
     
