@@ -130,21 +130,13 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
               content:'時間だよ～',
             })
             console.log(res.data)
-            return res.send({
-              // https://discord.com/developers/docs/interactions/receiving-and-responding#responding-to-an-interaction
-              type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-              data:{
-                content:'👍'
-              }
+            discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
+              content: `test ${interaction.member.user.username}!`
             });
           }catch(e){
             console.log(e)
-            return res.send({
-              // https://discord.com/developers/docs/interactions/receiving-and-responding#responding-to-an-interaction
-              type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-              data:{
-                content:'👍'
-              }
+            discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
+              content: `no`
             });
           }
         }, 10 * 1000);
