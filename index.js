@@ -121,7 +121,7 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       setTimeout(() => {
         // 1分後にメッセージを送信
         discord_api.post(`/channels/${interaction.channel_id}/messages`, {
-          content: `1分が経過しました、${interaction.member.user.username}!`
+          content: `1分が経過しました`
         });
       }, 60 * 1000); // 60秒 * 1000ミリ秒 = 1分
     }
