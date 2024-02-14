@@ -131,12 +131,12 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
             })
             console.log(res.data)
             discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
-              content: `test ${interaction.member.user.username}!`
+              content: `👍`
             });
           }catch(e){
             console.log(e)
             discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
-              content: `no`
+              content: `エラーが発生しました。もう一度お試しください。`
             });
           }
         }, 10 * 1000);
