@@ -122,16 +122,21 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         recipient_id: interaction.member.user.id
       })).data
     
-      setTimeout(async () => {
-        try{
-          let res = await discord_api.post(`/channels/${c.id}/messages`,{
-            content:'時間だよ～',
-          })
-          console.log(res.data)
-        }catch(e){
-          console.log(e)
-        }
-      }, 10 * 1000); // 30秒 * 1000ミリ秒 = 30秒
+      // setTimeoutをPromiseでラップ
+      await new Promise(resolve => {
+        setTimeout(async () => {
+          try{
+            let res = await discord_api.post(`/channels/${c.id}/messages`,{
+              content:'時間だよ～',
+            })
+            console.log(res.data)
+            resolve(); // 非同期処理が完了したらresolveを呼び出す
+          }catch(e){
+            console.log(e)
+            resolve(); // エラーが発生してもresolveを呼び出す
+          }
+        }, 10 * 1000);
+      });
     }
 
     
