@@ -112,19 +112,7 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       });
     }
     
-    if(interaction.data.name == 'timer'){
-      // 初期応答を送信
-      discord_api.post(`/interactions/${interaction.id}/${interaction.token}/callback`, {
-        type: 5, // ACK_WITH_SOURCE
-      });
-    
-      setTimeout(() => {
-        // 1分後にメッセージを送信
-        discord_api.post(`/channels/${interaction.channel_id}/messages`, {
-          content: `1分が経過しました`
-        });
-      }, 1000); // 60秒 * 1000ミリ秒 = 1分
-    }
+
 
     
   }
