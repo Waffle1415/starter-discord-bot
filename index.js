@@ -131,7 +131,7 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         }catch(e){
           console.log(e)
         }
-      }, 30 * 1000); // 60秒 * 1000ミリ秒 = 1分
+      }, 10 * 1000); // 60秒 * 1000ミリ秒 = 1分
     }
 
     
