@@ -130,10 +130,22 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
               content:'時間だよ～',
             })
             console.log(res.data)
-            resolve(); // 非同期処理が完了したらresolveを呼び出す
+            return res.send({
+              // https://discord.com/developers/docs/interactions/receiving-and-responding#responding-to-an-interaction
+              type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+              data:{
+                content:'👍'
+              }
+            });
           }catch(e){
             console.log(e)
-            resolve(); // エラーが発生してもresolveを呼び出す
+            return res.send({
+              // https://discord.com/developers/docs/interactions/receiving-and-responding#responding-to-an-interaction
+              type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+              data:{
+                content:'👍'
+              }
+            });
           }
         }, 10 * 1000);
       });
