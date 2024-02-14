@@ -37,7 +37,7 @@ client.on('message', message=> {
 app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   const interaction = req.body;
 
-  if (message.content.includes(1 + '分')) {
+  /*if (message.content.includes(1 + '分')) {
     message.channel.send('1分数えます');
     message.react('????');
   
@@ -57,7 +57,7 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     });
   }
 
-  /*if(interaction.type === InteractionType.message){
+  if(interaction.type === InteractionType.message){
     interaction.data.message.content
   }*/
 
