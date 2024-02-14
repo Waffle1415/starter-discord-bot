@@ -119,11 +119,11 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       });
     
       setTimeout(() => {
-        // 1時間後にメッセージを送信
-        discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
-          content: `1時間が経過しました、${interaction.member.user.username}!`
+        // 1分後にメッセージを送信
+        discord_api.post(`/channels/${interaction.channel_id}/messages`, {
+          content: `1分が経過しました、${interaction.member.user.username}!`
         });
-      }, 60 * 1000); // 60分 * 60秒 * 1000ミリ秒 = 1時間
+      }, 60 * 1000); // 60秒 * 1000ミリ秒 = 1分
     }
 
     
