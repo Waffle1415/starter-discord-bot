@@ -131,13 +131,6 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         }catch(e){
           console.log(e)
         }
-        return res.send({
-          // https://discord.com/developers/docs/interactions/receiving-and-responding#responding-to-an-interaction
-          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-          data:{
-            content:'👍'
-          }
-        });
       }, 10 * 1000); // 60秒 * 1000ミリ秒 = 1分
     }
 
