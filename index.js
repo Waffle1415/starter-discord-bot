@@ -26,6 +26,12 @@ const discord_api = axios.create({
   }
 });
 
+client.on('message', message=> {
+  if (message.content ==='a') {
+      message.channel.send ('b');
+ }
+});
+
 
 
 app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
@@ -49,6 +55,10 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       message.channel.send('時間です');
       return;
     });
+  }
+
+  if(interaction.type === InteractionType.message){
+    interaction.data.message.content
   }
 
 
