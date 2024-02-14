@@ -66,22 +66,26 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         }
       });
     }
-
+    
     if(interaction.data.name == 'timer'){
       // 1分後にリマインドする
       setTimeout(async () => {
-        let c = (await discord_api.post(`/users/@me/channels`,{
-          recipient_id: interaction.member.user.id
-        })).data
         try{
-          let res = await discord_api.post(`/channels/${c.id}/messages`,{
-            content:'1分経ちました！'
+          let res = await discord_api.post(`/interactions/${interaction.id}/${interaction.token}/callback`,{
+            type: 4,
+            data: {
+              content: `時間ですよ ${interaction.member.user.username}!`
+            }
           })
           console.log(res.data)
         }catch(e){
           console.log(e)
         }
-      }, 60000);
+      }, 60000)
+
+    }
+
+    
   }
 
 });
