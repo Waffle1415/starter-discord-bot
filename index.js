@@ -141,7 +141,9 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
           });
         }
       }, 10 * 1000);
-    } else if(interaction.data.name == 'stop'){
+    }
+    
+    if(interaction.data.name == 'stop'){
       // 'stop'コマンドが受け取られたときにインターバルをクリア
       clearInterval(intervalId);
     }
