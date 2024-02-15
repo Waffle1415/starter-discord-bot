@@ -157,9 +157,9 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
           recipient_id: interaction.member.user.id
         })).data
     
-        await discord_api.post(`/channels/${c.id}/messages`,{
-          content:'タイマーを停止しました。',
-        })
+        await discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
+          content: `タイマーを停止しました。`
+        });
       } catch(e) {
         console.log(e)
         try {
