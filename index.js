@@ -26,36 +26,8 @@ const discord_api = axios.create({
   }
 });
 
-/*client.on('message', message=> {
-  if (message.content ==='a') {
-      message.channel.send ('b');
- }
-});*/
-
-
-
 app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   const interaction = req.body;
-
-  /*if (message.content.includes(1 + '分')) {
-    message.channel.send('1分数えます');
-    message.react('????');
-  
-    function sleep(waitSec, callbackFunc) {
-        var spanedSec = 0;
-        var id = setInterval(function() {
-            spanedSec++;
-            if (spanedSec >= waitSec) {
-                clearInterval(id);
-                if (callbackFunc) callbackFunc();
-            }
-        }, 1000);
-    }
-    sleep(60, function() {
-      message.channel.send('時間です');
-      return;
-    });
-  }*/
 
   if (interaction.type === InteractionType.message){
     // 最後のメッセージを取得
@@ -147,30 +119,30 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       }, 10 * 1000);
     }
 
-if(interaction.data.name == 'stop'){
-  // 'stop'コマンドが受け取られたときにインターバルをクリアする
-  clearInterval(intervalId);
+    if(interaction.data.name == 'stop'){
+      // 'stop'コマンドが受け取られたときにインターバルをクリアする
+      clearInterval(intervalId);
 
-  // stopメッセージを送信
-  try {
-    let c = (await discord_api.post(`/users/@me/channels`,{
-      recipient_id: interaction.member.user.id
-    })).data
+      // stopメッセージを送信
+      try {
+        let c = (await discord_api.post(`/users/@me/channels`,{
+          recipient_id: interaction.member.user.id
+        })).data
 
-    await discord_api.post(`/channels/${c.id}/messages`,{
-      content:'タイマーを停止しました。',
-    })
-  } catch(e) {
-    console.log(e)
-    try {
-      await discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
-        content: `エラーが発生しました。もう一度お試しください。`
-      });
-    } catch (error) {
-      console.error('Failed to send stop message:', error);
+        await discord_api.post(`/channels/${c.id}/messages`,{
+          content:'タイマーを停止しました。',
+        })
+      } catch(e) {
+        console.log(e)
+        try {
+          await discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
+            content: `エラーが発生しました。もう一度お試しください。`
+          });
+        } catch (error) {
+          console.error('Failed to send stop message:', error);
+        }
+      }
     }
-  }
-}
 
     
   }
