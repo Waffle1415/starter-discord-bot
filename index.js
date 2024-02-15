@@ -17,7 +17,7 @@ const app = express();
 
 const discord_api = axios.create({
   baseURL: 'https://discord.com/api/',
-  timeout: 3000,
+  timeout: 30000,
   headers: {
 	"Access-Control-Allow-Origin": "*",
 	"Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
@@ -86,53 +86,56 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     
     let intervalId;
 
-    if (interaction.data.name == 'timer') {
+    if(interaction.data.name == 'timer'){
       // 初期応答を送信
       await discord_api.post(`/interactions/${interaction.id}/${interaction.token}/callback`, {
-        type: InteractionResponseType.ACKNOWLEDGE,
+        type: 5, // ACK_WITH_SOURCE
       });
-  
+    
       let c = (await discord_api.post(`/users/@me/channels`,{
         recipient_id: interaction.member.user.id
-      })).data;
-  
-      // setIntervalを使用して1分ごとにメッセージを送信
+      })).data
+    
+      // setIntervalを使用して10秒ごとにメッセージを送信
       intervalId = setInterval(async () => {
-        try {
-          let res = await discord_api.post(`/channels/${c.id}/messages`, {
-            content: '1分経ちました！',
+        try{
+          let res = await discord_api.post(`/channels/${c.id}/messages`,{
+            content:'時間だよ～',
+          })
+          console.log(res.data)
+          await discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
+            content: `👍`
           });
-          console.log(res.data);
-        } catch (e) {
-          console.log(e);
+        }catch(e){
+          console.log(e)
           try {
-            await discord_api.post(`/webhooks/${APPLICATION_ID}/${interaction.token}`, {
+            await discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
               content: `エラーが発生しました。もう一度お試しください。`
             });
           } catch (error) {
             console.error('Failed to send error message:', error);
           }
         }
-      }, 10 * 1000); // 1分ごとに実行
+      }, 10 * 1000);
     }
-  
-    if (interaction.data.name == 'stop') {
+
+    if(interaction.data.name == 'stop'){
       // 'stop'コマンドが受け取られたときにインターバルをクリアする
       clearInterval(intervalId);
-  
+
       // stopメッセージを送信
       try {
         let c = (await discord_api.post(`/users/@me/channels`,{
           recipient_id: interaction.member.user.id
-        })).data;
-  
+        })).data
+
         await discord_api.post(`/channels/${c.id}/messages`,{
-          content: 'タイマーを停止しました。',
-        });
+          content:'タイマーを停止しました。',
+        })
       } catch(e) {
-        console.log(e);
+        console.log(e)
         try {
-          await discord_api.post(`/webhooks/${APPLICATION_ID}/${interaction.token}`, {
+          await discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
             content: `エラーが発生しました。もう一度お試しください。`
           });
         } catch (error) {
@@ -140,7 +143,6 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
         }
       }
     }
-  
 
     
   }
