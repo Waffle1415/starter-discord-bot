@@ -150,10 +150,26 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
     if(interaction.data.name == 'stop'){
       // 'stop'コマンドが受け取られたときにインターバルをクリアする
       clearInterval(intervalId);
+    
       // stopメッセージを送信
-      discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
-        content: `タイマーを停止しました。`
-      });
+      try {
+        let c = (await discord_api.post(`/users/@me/channels`,{
+          recipient_id: interaction.member.user.id
+        })).data
+    
+        await discord_api.post(`/channels/${c.id}/messages`,{
+          content:'タイマーを停止しました。',
+        })
+      } catch(e) {
+        console.log(e)
+        try {
+          await discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
+            content: `エラーが発生しました。もう一度お試しください。`
+          });
+        } catch (error) {
+          console.error('Failed to send stop message:', error);
+        }
+      }
     }
 
     
