@@ -103,8 +103,8 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
             content:'時間だよ～',
           })
           console.log(res.data)
-          await discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
-            content: `👍`
+          await discord_api.post(`/interactions/${interaction.id}/${interaction.token}/callback`, {
+            type: 5, // ACK_WITH_SOURCE
           });
         }catch(e){
           console.log(e)
