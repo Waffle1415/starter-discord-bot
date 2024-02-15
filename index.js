@@ -131,9 +131,9 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
             content:'時間だよ～',
           })
           console.log(res.data)
-          await discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
+          /*await discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
             content: `👍`
-          });
+          });*/
         }catch(e){
           console.log(e)
           try {
@@ -147,30 +147,30 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       }, 10 * 1000);
     }
 
-    if(interaction.data.name == 'stop'){
-      // 'stop'コマンドが受け取られたときにインターバルをクリアする
-      clearInterval(intervalId);
-    
-      // stopメッセージを送信
-      try {
-        let c = (await discord_api.post(`/users/@me/channels`,{
-          recipient_id: interaction.member.user.id
-        })).data
-    
-        await discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
-          content: `タイマーを停止しました。`
-        });
-      } catch(e) {
-        console.log(e)
-        try {
-          await discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
-            content: `エラーが発生しました。もう一度お試しください。`
-          });
-        } catch (error) {
-          console.error('Failed to send stop message:', error);
-        }
-      }
+if(interaction.data.name == 'stop'){
+  // 'stop'コマンドが受け取られたときにインターバルをクリアする
+  clearInterval(intervalId);
+
+  // stopメッセージを送信
+  try {
+    let c = (await discord_api.post(`/users/@me/channels`,{
+      recipient_id: interaction.member.user.id
+    })).data
+
+    await discord_api.post(`/channels/${c.id}/messages`,{
+      content:'タイマーを停止しました。',
+    })
+  } catch(e) {
+    console.log(e)
+    try {
+      await discord_api.post(`/webhooks/${process.env.APPLICATION_ID}/${interaction.token}`, {
+        content: `エラーが発生しました。もう一度お試しください。`
+      });
+    } catch (error) {
+      console.error('Failed to send stop message:', error);
     }
+  }
+}
 
     
   }
