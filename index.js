@@ -9,8 +9,6 @@ const GUILD_ID = process.env.GUILD_ID
 
 const axios = require('axios')
 const express = require('express');
-const Discord = require('discord.js');
-const client = new Discord.Client();
 const { InteractionType, InteractionResponseType, verifyKeyMiddleware } = require('discord-interactions');
 
 
@@ -184,22 +182,21 @@ app.get('/register_commands', async (req,res) =>{
 
 // 10秒ごとにメッセージを送信する
 app.post('/send-message', (req, res) => {
-  // メッセージを送信するチャンネルのIDを取得します
   const channelId = req.body.channelId;
-  // 送信するメッセージを取得します
   const message = req.body.message;
 
-  // チャンネルを取得します
-  const channel = client.channels.cache.get(channelId);
+  setInterval(async () => {
+    try {
+      await discordAxios.post(`/channels/${channelId}/messages`, {
+        content: message
+      });
+      console.log('Message sent');
+    } catch (error) {
+      console.error(error);
+    }
+  }, 10000); // 10秒ごとにメッセージを送信します
 
-  // メッセージを送信します
-  if (channel) {
-    setInterval(() => {
-      channel.send(message);
-    }, 10 * 1000); // 10秒ごとにメッセージを送信します
-  }
-
-  res.send('Message sent');
+  res.send('Message will be sent every 10 seconds');
 });
 
 
