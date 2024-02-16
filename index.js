@@ -196,6 +196,15 @@ app.get('/', async (req,res) =>{
   return res.send('Follow documentation ')
 })
 
+app.setInterval(async () => {
+  return res.send({
+    // https://discord.com/developers/docs/interactions/receiving-and-responding#responding-to-an-interaction
+    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+    data:{
+      content:'👍'
+    }
+  });
+}, 10 * 1000);
 
 app.listen(8999, () => {
 
