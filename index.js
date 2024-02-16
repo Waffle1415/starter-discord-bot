@@ -29,21 +29,6 @@ const discord_api = axios.create({
 app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
   const interaction = req.body;
 
-  if (interaction.type === InteractionType.message){
-    // 最後のメッセージを取得
-    let last_message = (await discord_api.get(`/channels/${interaction.channel_id}/messages`)).data[0]
-    console.log(last_message)
-    // メッセージが"a"だったら"b"を返す
-    if(last_message.content == 'a'){
-      // https://discord.com/developers/docs/resources/channel#create-message
-      let res = await discord_api.post(`/channels/${interaction.channel_id}/messages`,{
-        content:'b',
-      })
-      console.log(res.data)
-    }
-  }
-
-
   if (interaction.type === InteractionType.APPLICATION_COMMAND) {
     console.log(interaction.data.name)
     if(interaction.data.name == 'yo'){
@@ -195,16 +180,21 @@ app.get('/register_commands', async (req,res) =>{
 })
 
 
-app.get('/', async (req,res) =>{
-  return res.send('Follow documentation ')
-})
-
-app.setInterval(async () => {
-  // メッセージを送信
-  let res = await discord_api.post(`/channels/8999/messages`,{
-    content:'👍',
-  })
+// 10秒ごとにメッセージを送信する
+setInterval(async () => {
+  try{
+    let c = (await discord_api.post(`/users/@me/channels`,{
+      recipient_id: 'user_id'
+    })).data
+    let res = await discord_api.post(`/channels/${c.id}/messages`,{
+      content:'時間だよ～',
+    })
+    console.log(res.data)
+  }catch(e){
+    console.log(e)
+  }
 }, 10 * 1000);
+
 
 app.listen(8999, () => {
 
