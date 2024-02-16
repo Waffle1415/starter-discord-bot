@@ -15,6 +15,17 @@ const { InteractionType, InteractionResponseType, verifyKeyMiddleware } = requir
 const app = express();
 // app.use(bodyParser.json());
 
+const { exec } = require('child_process');
+
+exec('npm install discord.js', (error, stdout, stderr) => {
+  if (error) {
+    console.error(`exec error: ${error}`);
+    return;
+  }
+  console.log(`stdout: ${stdout}`);
+  console.error(`stderr: ${stderr}`);
+});
+
 const discord_api = axios.create({
   baseURL: 'https://discord.com/api/',
   timeout: 30000,
