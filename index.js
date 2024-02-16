@@ -181,19 +181,22 @@ app.get('/register_commands', async (req,res) =>{
 
 
 // 10秒ごとにメッセージを送信する
-setInterval(async () => {
-  try{
-    let c = (await discord_api.post(`/users/@me/channels`,{
-      recipient_id: 'user_id'
-    })).data
-    let res = await discord_api.post(`/channels/${c.id}/messages`,{
-      content:'時間だよ～',
-    })
-    console.log(res.data)
-  }catch(e){
-    console.log(e)
-  }
-}, 10 * 1000);
+app.post('/send_message', async (req, res) => {
+  setInterval(async () => {
+    try{
+      let c = (await discord_api.post(`/users/@me/channels`,{
+        recipient_id: 'user_id'
+      })).data
+      let res = await discord_api.post(`/channels/${c.id}/messages`,{
+        content:'時間だよ～',
+      })
+      console.log(res.data)
+    }catch(e){
+      console.log(e)
+    }
+  }, 10 * 1000);
+  res.send('sending message')
+});
 
 
 app.listen(8999, () => {
