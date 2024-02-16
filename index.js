@@ -51,6 +51,9 @@ app.post('/interactions', verifyKeyMiddleware(PUBLIC_KEY), async (req, res) => {
       discord_api.post(`/interactions/${interaction.id}/${interaction.token}/callback`, {
         type: 5, // ACK_WITH_SOURCE
       });
+
+      // 取得したinteraction.data.nameを表示
+      console.log(interaction.data.name);
   
       setTimeout(() => {
         // 5秒後にメッセージを送信
@@ -197,13 +200,10 @@ app.get('/', async (req,res) =>{
 })
 
 app.setInterval(async () => {
-  return res.send({
-    // https://discord.com/developers/docs/interactions/receiving-and-responding#responding-to-an-interaction
-    type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-    data:{
-      content:'👍'
-    }
-  });
+  // メッセージを送信
+  let res = await discord_api.post(`/channels/8999/messages`,{
+    content:'👍',
+  })
 }, 10 * 1000);
 
 app.listen(8999, () => {
